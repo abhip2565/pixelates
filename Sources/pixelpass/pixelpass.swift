@@ -4,7 +4,7 @@ import CoreImage
 import Compression
 #if canImport(UIKit)
 import UIKit
- class PixelPass {
+ public class PixelPass {
     public init()
     {
         
