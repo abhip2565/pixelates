@@ -4,8 +4,11 @@ import CoreImage
 import Compression
 #if canImport(UIKit)
 import UIKit
-public class PixelPass {
-    
+ class PixelPass {
+    public init()
+    {
+        
+    }
     public func decode(_ input: String) -> Data? {
         do {
             let base45DecodedData = try input.fromBase45()
