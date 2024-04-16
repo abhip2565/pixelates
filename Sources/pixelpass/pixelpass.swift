@@ -42,33 +42,31 @@ import UIKit
         return base45EncodedString
     }
     
-    public func generateQRCode(from string: String, ecc:ECC,header: String="") -> UIImage? {
-        var QrText=encode(string)
-        if(QrText==nil)
-        {
-            return nil;
-        }
-        else
-        {
-            QrText=QrText!+header;
-        }
-        let data = QrText?.data(using: String.Encoding.ascii)
-        
-        if let filter = CIFilter(name: "CIQRCodeGenerator") {
-            filter.setValue(data, forKey: "inputMessage")
-            filter.setValue(ecc.rawValue, forKey: "inputCorrectionLevel")
-            
-            if let qrImage = filter.outputImage {
-                let scaleX = 500 / qrImage.extent.size.width
-                let scaleY = 500 / qrImage.extent.size.height
-                let transformedImage = qrImage.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
-                
-                return UIImage(ciImage: transformedImage)
-            }
-        }
-        
-        return nil
-    }
+     public func generateQRCode(from string: String, ecc: ECC, header: String = "") -> Data? {
+         var qrText = encode(string)
+         if qrText == nil {
+             return nil
+         } else {
+             qrText! += header
+         }
+         let data = qrText?.data(using: String.Encoding.ascii)
+         
+         if let filter = CIFilter(name: "CIQRCodeGenerator") {
+             filter.setValue(data, forKey: "inputMessage")
+             filter.setValue(ecc.rawValue, forKey: "inputCorrectionLevel")
+             
+             if let qrImage = filter.outputImage {
+                 let context = CIContext(options: nil)
+                 if let cgImage = context.createCGImage(qrImage, from: qrImage.extent) {
+                     let uiImage = UIImage(cgImage: cgImage)
+                     return uiImage.pngData() // Get PNG data
+                 }
+             }
+         }
+         
+         return nil
+     }
+
     
 }
 #endif
